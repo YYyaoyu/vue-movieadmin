@@ -1,6 +1,40 @@
 <template>
 <div class="loginPanel">
-    <div class="container"></div>
+    <div class="logoWrapper">
+        <img src="../assets/logo.png"/>
+    </div>
+    <div class="container clearfix">
+        <div class="loginIcon">
+            <img src="../assets/login_img.png"/>
+        </div>
+        <div class="loginForm">
+            <img src="../assets/login_title.png" class="loginTitle"/>
+            <div class="loginContent">
+                <ul>
+                    <li class="username">
+                        <label></label>
+                        <input type="text" placeholder="用户名"/>
+                    </li>
+                    <li class="pwd">
+                        <label></label>
+                        <input type="text" placeholder="密码"/>
+                    </li>
+                    <li class="code">
+                        <label></label>
+                        <input type="text" placeholder="验证码"/>
+                    </li>
+                </ul>
+                <div class="loginOption">
+                    <label>
+                        <input type="checkbox"/>
+                        保存密码
+                    </label>
+                    <a>登录</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 </template>
 
@@ -9,7 +43,12 @@ export default {
     name: 'login',
     data() {
         return {
-
+            labelPosition: 'right',
+            formLabelAlign: {
+                name: '',
+                region: '',
+                type: ''
+            }
         }
     },
     methods:{
@@ -19,16 +58,127 @@ export default {
 </script>
 
 <style lang="scss">
-body,html{
-    width: 100%;
+*{
+    margin: 0;
+    padding: 0;
+}
+html{
     height: 100%;
 }
+body{
+    height: 100%;
+    background-color: rgb(28,119,172);
+}
+input{
+    border: none;
+    outline: none;
+}
 .loginPanel{
-    background-color: aqua;
-    .container{
-        width: 600px;
-        height: 300px;
+    width: 850px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    .logoWrapper{
+        text-align: center;
+    }
+    .container{   
         background-color: #fff;
+        .loginIcon{
+            float: left;
+            margin-left: 20px;
+        }
+        .loginForm{
+            float: left;
+            width: 300px;
+            margin-left: 80px;
+            .loginTitle{
+                margin: 10px 0;
+            }
+            .loginContent{
+                ul{
+                    li{
+                        width: 100%;
+                        height: 40px;
+                        line-height: 40px;
+                        border: 1px solid #ddd;
+                        margin-bottom: 10px;
+                        label{
+                            width: 35px;
+                            height: 35px;
+                            display: inline-block;
+                            vertical-align: middle;
+                            border-right: 1px solid #ddd;
+                        }
+                        input{
+                            vertical-align: middle;
+                            width: 200px;
+                            height: 35px;
+                            padding: 0 5px;
+                        }
+                    }
+                }
+                li.username{
+                    label{
+                        background: url(../assets/avatar.png) center no-repeat;
+                        background-size: 70%;
+                    }
+                }
+                li.pwd{
+                    label{
+                        background: url(../assets/pwd.png) center no-repeat;
+                        background-size: 70%;
+                    }
+                }
+                li.code{
+                    label{
+                        background: url(../assets/code.png) center no-repeat;
+                        background-size: 70%;
+                    }
+                }
+                .loginOption{
+                    color: #888;
+                    font-size: 14px;
+                    label{
+                        position: relative;
+                        padding-left: 20px;
+                        input{
+                            width: 15px;
+                            height: 15px;
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            border: 1px solid #ddd;
+                            -webkit-appearance:none;
+                        }
+                        
+                        input:checked::before{
+                             content: "\2713";
+                             background-color: #fff;
+                             position: absolute;
+                             top: 0;
+                             width: 100%;
+                             height: 100%;
+                             border: 1px solid #2E6EBA;
+                             color:#2E6EBA;
+                             font-size: 12px;
+                             font-weight: bold;
+
+                        }
+                    }
+                    a{
+                        width: 100px;
+                        height: 40px;
+                        line-height: 40px;
+                        text-align: center;
+                        background-color: #2E6EBA;
+                        color: #fff;
+                        float: right;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
     }
 }
 </style>
