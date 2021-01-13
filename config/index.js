@@ -10,7 +10,22 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      // '/jiudian': {
+      //   target:'https://ihotel.meituan.com/',
+      //   changeOrigin:true,
+      //   pathRewrite:{
+      //     '^/jiudian':''
+      //   }
+      // }
+      '/api': {
+        target:'http://47.96.100.214/test/',
+        changeOrigin:true,
+        pathRewrite:{
+          '^/api':''
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

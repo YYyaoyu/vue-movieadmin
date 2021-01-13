@@ -13,11 +13,11 @@
                 <ul>
                     <li class="username">
                         <label></label>
-                        <input type="text" placeholder="用户名"/>
+                        <input type="text" placeholder="用户名" v-model="username"/>
                     </li>
                     <li class="pwd">
                         <label></label>
-                        <input type="text" placeholder="密码"/>
+                        <input type="text" placeholder="密码" v-model="password"/>
                     </li>
                     <li class="code">
                         <label></label>
@@ -29,7 +29,7 @@
                         <input type="checkbox"/>
                         保存密码
                     </label>
-                    <a>登录</a>
+                    <a @click="login()">登录</a>
                 </div>
             </div>
 
@@ -39,20 +39,41 @@
 </template>
 
 <script>
+import axios from 'axios'
+import qs from 'qs'
+
 export default {
     name: 'login',
     data() {
         return {
-            labelPosition: 'right',
-            formLabelAlign: {
-                name: '',
-                region: '',
-                type: ''
-            }
+            username: '',
+            password: ''
         }
     },
     methods:{
-       
+       login(){
+            let that = this;
+            let data = {
+                username: this.username,
+                password: this.password
+            };
+           
+            axios({
+                method: 'post',
+                url: '/api/index.php/admin/Login/addUser',
+                data: qs.stringify(data)
+            })
+            .then(function (response) {
+                console.log(response);
+                that.$message({
+                    message: '登录成功',
+                    type: 'success'
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+       }
     }
 }
 </script>
