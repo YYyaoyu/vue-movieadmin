@@ -18,7 +18,7 @@
               </li>
               <li class="pwd">
                 <label></label>
-                <input type="text" placeholder="密码" v-model="password" />
+                <input type="password" placeholder="密码" v-model="password" />
               </li>
               <li class="code">
                 <label></label>
@@ -54,6 +54,12 @@ export default {
       password: ""
     };
   },
+  beforeCreate() {
+    document.querySelector('body').setAttribute('style', 'background-color:rgb(28, 119, 172);')
+  },
+  beforeDestroy () {
+    document.querySelector('body').removeAttribute('style');
+  },
   methods: {
     login() {
       let that = this;
@@ -64,15 +70,26 @@ export default {
 
       axios({
         method: "post",
-        url: "/api/index.php/admin/Login/addUser",
+        url: "/api/index.php/admin/Login/login",
         data: qs.stringify(data)
       })
         .then(function(response) {
           console.log(response);
-          that.$message({
-            message: "登录成功",
-            type: "success"
-          });
+          if(response.data.response=='success'){
+            that.$message({
+              message: response.data.result,
+              type: "success"
+            });
+            setTimeout(function(){
+              that.$router.push({name:'UserList'});
+            },1000);
+          }else{
+            that.$message({
+              message: response.data.result,
+              type: "error"
+            });
+          }
+          
         })
         .catch(function(error) {
           console.log(error);
@@ -82,17 +99,12 @@ export default {
 };
 </script>
 
-<style lang="scss">
-* {
-  margin: 0;
-  padding: 0;
-}
+<style scoped lang="scss">
 html {
   height: 100%;
 }
 body {
   height: 100%;
-  background-color: rgb(28, 119, 172);
 }
 input {
   border: none;
