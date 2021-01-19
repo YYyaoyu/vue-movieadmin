@@ -1,6 +1,6 @@
 <template>
-<el-row class="tac" style="height:100%;">
-  <el-col :span="4" style="height:100%;">
+<!-- <el-row class="tac" style="height:100%;"> -->
+  <el-col :span="4" style="width: 200px;height:100%;">
     <h5>后台管理系统</h5>
     <el-menu
       default-active="1-1"
@@ -46,7 +46,7 @@
       </el-menu-item>
     </el-menu>
   </el-col>
-</el-row>
+<!-- </el-row> -->
 
 
 </template>
