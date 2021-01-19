@@ -70,7 +70,7 @@ export default {
 
       axios({
         method: "post",
-        url: "/api/index.php/admin/Login/login",
+        url: "/api/index.php/admin/UserInfo/login",
         data: qs.stringify(data)
       })
         .then(function(response) {
@@ -100,12 +100,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-html {
-  height: 100%;
-}
-body {
-  height: 100%;
-}
 input {
   border: none;
   outline: none;
