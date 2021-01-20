@@ -70,7 +70,7 @@ export default {
 
       axios({
         method: "post",
-        url: "/api/index.php/admin/UserInfo/login",
+        url: "/test/index.php/admin/UserInfo/login",
         data: qs.stringify(data)
       })
         .then(function(response) {

@@ -11,18 +11,11 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      // '/jiudian': {
-      //   target:'https://ihotel.meituan.com/',
-      //   changeOrigin:true,
-      //   pathRewrite:{
-      //     '^/jiudian':''
-      //   }
-      // }
-      '/api': {
+      '/test': {
         target:'http://47.96.100.214/test/',
         changeOrigin:true,
         pathRewrite:{
-          '^/api':''
+          '^/test':''
         }
       }
     },
