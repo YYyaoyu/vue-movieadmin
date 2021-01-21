@@ -26,7 +26,9 @@
           <el-table-column prop="username" label="姓名" min-width="12%"></el-table-column>
           <el-table-column prop="sex" label="性别" min-width="12%"></el-table-column>
           <el-table-column prop="reg_time" label="日期" min-width="12%"></el-table-column>
-          <el-table-column prop="area" label="地区" min-width="12%"></el-table-column>
+          <el-table-column label="地区" min-width="12%">
+            <template slot-scope="scope">{{scope.row.province + scope.row.city + scope.row.area}}</template>
+          </el-table-column>
           <el-table-column prop="opt" label="操作" min-width="12%">
             <template slot-scope="scope">
               <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -47,25 +49,45 @@
         ></el-pagination>
       </div>
     </div>
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
       <el-form :model="form">
         <el-form-item label="姓名" :label-width="formLabelWidth">
           <el-input v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="性别" :label-width="formLabelWidth">
-          <el-radio v-model="form.sex" label="1">男</el-radio>
-          <el-radio v-model="form.sex" label="2">女</el-radio>
+          <el-radio v-model="form.sex" label="男">男</el-radio>
+          <el-radio v-model="form.sex" label="女">女</el-radio>
         </el-form-item>
         <el-form-item label="地区" :label-width="formLabelWidth">
-          <el-select v-model="form.area" placeholder="请选择">
-            <el-option label="男" value="1"></el-option>
-            <el-option label="女" value="2"></el-option>
+          <el-select v-model="form.province" placeholder="省" @change="getCities">
+            <el-option
+              v-for="option in provinces"
+              :key="option.provinceid"
+              :value="option.provinceid"
+              :label="option.province"
+            ></el-option>
+          </el-select>
+          <el-select v-model="form.city" placeholder="市" @change="getAreas">
+            <el-option
+              v-for="option in cities"
+              :key="option.cityid"
+              :value="option.cityid"
+              :label="option.city"
+            ></el-option>
+          </el-select>
+          <el-select v-model="form.area" placeholder="区">
+            <el-option
+              v-for="option in areas"
+              :key="option.areaid"
+              :value="option.areaid"
+              :label="option.area"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="edit">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -87,12 +109,23 @@ export default {
       count: 0,
       dialogVisible: false,
       tableData: [],
+      provinces: [],
+      cities: [],
+      areas: [],
       form: {
+        username: "",
+        province: "",
+        city: "",
         area: "",
-        sex: "1",
-        username: ""
+        provinceid: "",
+        cityid: "",
+        areaid: "",
+        sex: ""
       },
-      formLabelWidth: "120px"
+      formLabelWidth: "50px",
+      province: '',
+      city: '',
+      area: ''
     };
   },
   created() {
@@ -109,6 +142,16 @@ export default {
     },
     handleEdit(index, row) {
       console.log(index, row);
+      this.form.username = this.tableData[index].username;
+      this.form.sex = this.tableData[index].sex;
+      this.form.provinceid = this.tableData[index].provinceid;
+      this.form.cityid = this.tableData[index].cityid;
+      this.form.areaid = this.tableData[index].areaid;
+      this.form.province = this.tableData[index].province;
+      this.form.city = this.tableData[index].city;
+      this.form.area = this.tableData[index].area;
+
+      this.getProvinces();
       this.dialogVisible = true;
     },
     handleDelete(index, row) {
@@ -128,13 +171,6 @@ export default {
     },
     handlePage(page) {
       this.getUserList(page);
-    },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(_ => {
-          done();
-        })
-        .catch(_ => {});
     },
     getUserList(page) {
       let that = this;
@@ -157,7 +193,58 @@ export default {
           console.log(error);
         });
     },
-    deleteAll() {}
+    deleteAll() {},
+    getProvinces(value) {
+      let that = this;
+      axios({
+        method: "post",
+        url: "/test/index.php/common/Region/getProvinces"
+      })
+        .then(function(response) {
+          that.provinces = response.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getCities(value) {
+      console.log(value);
+
+      let that = this;
+      axios({
+        method: "post",
+        url: "/test/index.php/common/Region/getCities",
+        data: qs.stringify({
+          provinceid: value
+        })
+      })
+        .then(function(response) {
+          that.cities = response.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getAreas(value) {
+      console.log(this.city)
+      let that = this;
+      axios({
+        method: "post",
+        url: "/test/index.php/common/Region/getAreas",
+        data: qs.stringify({
+          cityid: value
+        })
+      })
+        .then(function(response) {
+          that.areas = response.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    edit() {
+      console.log(this.form.province);
+    }
   }
 };
 </script>
@@ -215,12 +302,14 @@ export default {
   }
 }
 .el-dialog .el-input {
-  width: 200px;
+  width: 298px;
   margin-left: 10px;
 }
-.el-dialog .el-select {
-  width: 200px;
+.el-dialog .el-form .el-select {
+  width: 90px;
   margin-left: 10px;
 }
-
+.customWidth {
+  width: 1000px;
+}
 </style>
