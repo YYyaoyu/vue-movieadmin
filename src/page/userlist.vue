@@ -59,7 +59,7 @@
           <el-radio v-model="form.sex" label="女">女</el-radio>
         </el-form-item>
         <el-form-item label="地区" :label-width="formLabelWidth">
-          <el-select v-model="form.province" placeholder="省" @change="getCities">
+          <el-select v-model="form.provinceid" placeholder="省" @change="getCities">
             <el-option
               v-for="option in provinces"
               :key="option.provinceid"
@@ -67,7 +67,7 @@
               :label="option.province"
             ></el-option>
           </el-select>
-          <el-select v-model="form.city" placeholder="市" @change="getAreas">
+          <el-select v-model="form.cityid" placeholder="市" @change="getAreas">
             <el-option
               v-for="option in cities"
               :key="option.cityid"
@@ -75,7 +75,7 @@
               :label="option.city"
             ></el-option>
           </el-select>
-          <el-select v-model="form.area" placeholder="区">
+          <el-select v-model="form.areaid" placeholder="区">
             <el-option
               v-for="option in areas"
               :key="option.areaid"
@@ -113,19 +113,14 @@ export default {
       cities: [],
       areas: [],
       form: {
+        id: 0,
         username: "",
-        province: "",
-        city: "",
-        area: "",
         provinceid: "",
         cityid: "",
         areaid: "",
         sex: ""
       },
-      formLabelWidth: "50px",
-      province: '',
-      city: '',
-      area: ''
+      formLabelWidth: "50px"
     };
   },
   created() {
@@ -142,14 +137,12 @@ export default {
     },
     handleEdit(index, row) {
       console.log(index, row);
+      this.form.id = this.tableData[index].id;
       this.form.username = this.tableData[index].username;
       this.form.sex = this.tableData[index].sex;
       this.form.provinceid = this.tableData[index].provinceid;
       this.form.cityid = this.tableData[index].cityid;
       this.form.areaid = this.tableData[index].areaid;
-      this.form.province = this.tableData[index].province;
-      this.form.city = this.tableData[index].city;
-      this.form.area = this.tableData[index].area;
 
       this.getProvinces();
       this.dialogVisible = true;
@@ -186,7 +179,6 @@ export default {
         .then(function(response) {
           console.log(response.data.datalist);
           that.count = response.data.count;
-          console.log(that.count);
           that.tableData = response.data.datalist;
         })
         .catch(function(error) {
@@ -202,14 +194,13 @@ export default {
       })
         .then(function(response) {
           that.provinces = response.data;
+          that.getCities(that.form.provinceid);
         })
         .catch(function(error) {
           console.log(error);
         });
     },
     getCities(value) {
-      console.log(value);
-
       let that = this;
       axios({
         method: "post",
@@ -220,13 +211,13 @@ export default {
       })
         .then(function(response) {
           that.cities = response.data;
+          that.getAreas(that.form.cityid);
         })
         .catch(function(error) {
           console.log(error);
         });
     },
     getAreas(value) {
-      console.log(this.city)
       let that = this;
       axios({
         method: "post",
@@ -243,7 +234,26 @@ export default {
         });
     },
     edit() {
-      console.log(this.form.province);
+      console.log(this.form);
+      let that = this;
+      axios({
+        method: "post",
+        url: "/test/index.php/admin/UserInfo/edit",
+        data: qs.stringify(this.form)
+      })
+        .then(function(response) {
+          if (response.data.response == "success") {
+            that.$message({
+              message: response.data.result,
+              type: "success"
+            });
+            that.dialogVisible = false;
+            that.getUserList();
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   }
 };
