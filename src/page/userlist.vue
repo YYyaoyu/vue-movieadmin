@@ -9,6 +9,7 @@
             <el-date-picker v-model="createTime" type="date" placeholder="选择日期"></el-date-picker>
           </div>
           <el-button type="primary" icon="el-icon-search">查询</el-button>
+          <el-button type="success" icon="el-icon-plus" style="float:right;" @click="handleAdd">新增</el-button>
         </div>
         <el-table
           class="tableBox"
@@ -54,6 +55,9 @@
         <el-form-item label="姓名" :label-width="formLabelWidth">
           <el-input v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="密码" :label-width="formLabelWidth">
+          <el-input v-model="form.password" autocomplete="off" type="password"></el-input>
+        </el-form-item>
         <el-form-item label="性别" :label-width="formLabelWidth">
           <el-radio v-model="form.sex" label="男">男</el-radio>
           <el-radio v-model="form.sex" label="女">女</el-radio>
@@ -87,7 +91,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="edit">确 定</el-button>
+        <el-button type="primary" @click="type=='edit'?edit():add()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -115,12 +119,15 @@ export default {
       form: {
         id: 0,
         username: "",
+        password: "",
         provinceid: "",
         cityid: "",
         areaid: "",
         sex: ""
       },
-      formLabelWidth: "50px"
+      formLabelWidth: "50px",
+      type: "",
+      ids: ""
     };
   },
   created() {
@@ -139,16 +146,37 @@ export default {
       console.log(index, row);
       this.form.id = this.tableData[index].id;
       this.form.username = this.tableData[index].username;
+      this.form.password = this.tableData[index].password;
       this.form.sex = this.tableData[index].sex;
       this.form.provinceid = this.tableData[index].provinceid;
       this.form.cityid = this.tableData[index].cityid;
       this.form.areaid = this.tableData[index].areaid;
-
       this.getProvinces();
+      this.type = "edit";
       this.dialogVisible = true;
     },
     handleDelete(index, row) {
       console.log(index, row);
+      let that = this;
+
+      axios({
+        method: "post",
+        url: "/test/index.php/admin/UserInfo/del",
+        data: qs.stringify({ ids: this.tableData[index].id })
+      })
+        .then(function(response) {
+          console.log(response.data);
+          if (response.data.response == "success") {
+            that.$message({
+              message: response.data.result,
+              type: "success"
+            });
+            that.getUserList();
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
     toggleSelection(rows) {
       if (rows) {
@@ -161,6 +189,11 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      this.ids = val
+        .map(item => {
+          return item.id;
+        })
+        .join(",");
     },
     handlePage(page) {
       this.getUserList(page);
@@ -177,7 +210,6 @@ export default {
         data: qs.stringify(data)
       })
         .then(function(response) {
-          console.log(response.data.datalist);
           that.count = response.data.count;
           that.tableData = response.data.datalist;
         })
@@ -185,7 +217,26 @@ export default {
           console.log(error);
         });
     },
-    deleteAll() {},
+    deleteAll() {
+      let that = this;
+      axios({
+        method: "post",
+        url: "/test/index.php/admin/UserInfo/del",
+        data: qs.stringify({ ids: this.ids })
+      })
+        .then(function(response) {
+          if (response.data.response == "success") {
+            that.$message({
+              message: response.data.result,
+              type: "success"
+            });
+            that.getUserList();
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     getProvinces(value) {
       let that = this;
       axios({
@@ -239,6 +290,38 @@ export default {
       axios({
         method: "post",
         url: "/test/index.php/admin/UserInfo/edit",
+        data: qs.stringify(this.form)
+      })
+        .then(function(response) {
+          if (response.data.response == "success") {
+            that.$message({
+              message: response.data.result,
+              type: "success"
+            });
+            that.dialogVisible = false;
+            that.getUserList();
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    handleAdd() {
+      this.getProvinces();
+      this.form.username = "";
+      this.form.password = "";
+      this.form.sex = "";
+      this.form.provinceid = "";
+      this.form.cityid = "";
+      this.form.areaid = "";
+      this.type = "add";
+      this.dialogVisible = true;
+    },
+    add() {
+      let that = this;
+      axios({
+        method: "post",
+        url: "/test/index.php/admin/UserInfo/add",
         data: qs.stringify(this.form)
       })
         .then(function(response) {
