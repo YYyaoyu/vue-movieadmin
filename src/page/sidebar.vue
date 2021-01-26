@@ -16,8 +16,8 @@
           <span>数据管理</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="1-1">用户列表</el-menu-item>
-          <el-menu-item index="1-2">影片列表</el-menu-item>
+          <el-menu-item index="1-1"><a href="#/userlist">用户列表</a></el-menu-item>
+          <el-menu-item index="1-2"><a href="#/filmlist">影片列表</a></el-menu-item>
           <el-menu-item index="1-3">商家列表</el-menu-item>
           <el-menu-item index="1-4">订单列表</el-menu-item>
         </el-menu-item-group>
