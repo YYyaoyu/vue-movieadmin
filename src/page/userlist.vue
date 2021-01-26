@@ -6,9 +6,9 @@
         <div class="search">
           <div class="sitem">
             <span class="demonstration">创建时间</span>
-            <el-date-picker v-model="createTime" type="date" placeholder="选择日期"></el-date-picker>
+            <el-date-picker v-model="createTime" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" @change="changeTime"></el-date-picker>
           </div>
-          <el-button type="primary" icon="el-icon-search">查询</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button type="success" icon="el-icon-plus" style="float:right;" @click="handleAdd">新增</el-button>
         </div>
         <el-table
@@ -202,7 +202,8 @@ export default {
       let that = this;
       let data = {
         page: page || 1,
-        num: 10
+        num: 10,
+        createTime: this.createTime
       };
       axios({
         method: "post",
@@ -337,6 +338,12 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+    changeTime(val) {
+      this.createTime = val;
+    },
+    search() {
+      this.getUserList();
     }
   }
 };
