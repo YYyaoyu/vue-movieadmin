@@ -3,7 +3,8 @@
   <el-col :span="4" style="width: 200px;height:100%;">
     <h5>后台管理系统</h5>
     <el-menu
-      default-active="1-1"
+      :default-active="this.$route.path"
+      router
       class="el-menu-vertical-demo"
       @open="handleOpen"
       @close="handleClose"
@@ -16,8 +17,8 @@
           <span>数据管理</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="1-1"><a href="#/userlist">用户列表</a></el-menu-item>
-          <el-menu-item index="1-2"><a href="#/filmlist">影片列表</a></el-menu-item>
+          <el-menu-item index="/userlist">用户列表</el-menu-item>
+          <el-menu-item index="/filmlist">影片列表</el-menu-item>
           <el-menu-item index="1-3">商家列表</el-menu-item>
           <el-menu-item index="1-4">订单列表</el-menu-item>
         </el-menu-item-group>
@@ -32,15 +33,15 @@
           <el-menu-item index="2-2">影片排行</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-menu-item index="2">
+      <el-menu-item index="3">
         <i class="el-icon-menu"></i>
         <span slot="title">导航二</span>
       </el-menu-item>
-      <el-menu-item index="3" disabled>
+      <el-menu-item index="4" disabled>
         <i class="el-icon-document"></i>
         <span slot="title">导航三</span>
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item index="5">
         <i class="el-icon-setting"></i>
         <span slot="title">导航四</span>
       </el-menu-item>
@@ -58,6 +59,15 @@ export default {
         return {
 
         }
+    },
+    created() {
+      console.log(this)
+    },
+    props: {
+      activeIndex: {
+        type: String,
+        default: ''
+      }
     },
     methods:{
         handleOpen(key, keyPath) {

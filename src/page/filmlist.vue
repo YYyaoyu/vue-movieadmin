@@ -1,6 +1,5 @@
 <template>
   <div style="height: 100%;">
-    <sideBar></sideBar>
     <div class="el-wrapper">
       <div class="el-content">
         <div class="search">
@@ -134,12 +133,10 @@
 <script>
 import axios from "axios";
 import qs from "qs";
-import sideBar from "./sidebar";
 
 export default {
   name: "filmlist",
   components: {
-    sideBar
   },
   data() {
     return {

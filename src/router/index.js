@@ -7,7 +7,13 @@ import FilmList from '../page/filmlist'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
+    {
+      path: '/',
+      name: 'Login',
+      component: Login
+    },
     {
       path: '/login',
       name: 'Login',
@@ -22,7 +28,7 @@ export default new Router({
       path: '/filmlist',
       name: 'FilmList',
       component: FilmList
-    },
+    }
 
   ]
 })
