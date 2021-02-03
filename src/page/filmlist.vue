@@ -140,6 +140,7 @@ export default {
   },
   data() {
     return {
+      isLogin: true,
       createTime: "",
       count: 0,
       dialogVisible: false,

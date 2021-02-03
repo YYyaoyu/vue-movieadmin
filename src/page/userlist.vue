@@ -129,6 +129,7 @@ export default {
   },
   created() {
     this.getUserList();
+    this.$emit('getLoginMessage', true);
   },
   methods: {
     tableRowClassName({ row, rowIndex }) {

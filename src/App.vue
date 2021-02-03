@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <sideBar></sideBar>
-    <router-view/>
+    <sideBar v-if="isLogin"></sideBar>
+    <router-view @getLoginMessage="getLoginMessage"/>
   </div>
 </template>
 
@@ -12,6 +12,16 @@ export default {
   components: {
     sideBar
   },
+  data() {
+    return {
+      isLogin: false
+    }
+  },
+  methods: {
+    getLoginMessage(val) {
+      this.isLogin = val;
+    }
+  }
 }
 </script>
 
