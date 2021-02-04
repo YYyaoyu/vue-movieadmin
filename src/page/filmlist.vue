@@ -85,41 +85,33 @@
     </div>
     <el-dialog title="提示" :visible.sync="dialogVisible" width="410px">
       <el-form :model="form">
-        <el-form-item label="姓名" :label-width="formLabelWidth">
-          <el-input v-model="form.username" autocomplete="off"></el-input>
+        <el-form-item label="名称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="form.password" autocomplete="off" type="password"></el-input>
+        <el-form-item label="导演" :label-width="formLabelWidth">
+          <el-input v-model="form.dir" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="性别" :label-width="formLabelWidth">
-          <el-radio v-model="form.sex" label="男">男</el-radio>
-          <el-radio v-model="form.sex" label="女">女</el-radio>
+         <el-form-item label="主演" :label-width="formLabelWidth">
+          <el-input v-model="form.star" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="类型" :label-width="formLabelWidth">
+          <el-select v-model="form.catid" placeholder="类型">
+            <el-option
+              v-for="option in cat"
+              :key="option.id"
+              :value="option.id"
+              :label="option.name"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="地区" :label-width="formLabelWidth">
-          <el-select v-model="form.provinceid" placeholder="省" @change="getCities">
-            <el-option
-              v-for="option in provinces"
-              :key="option.provinceid"
-              :value="option.provinceid"
-              :label="option.province"
-            ></el-option>
-          </el-select>
-          <el-select v-model="form.cityid" placeholder="市" @change="getAreas">
-            <el-option
-              v-for="option in cities"
-              :key="option.cityid"
-              :value="option.cityid"
-              :label="option.city"
-            ></el-option>
-          </el-select>
-          <el-select v-model="form.areaid" placeholder="区">
-            <el-option
-              v-for="option in areas"
-              :key="option.areaid"
-              :value="option.areaid"
-              :label="option.area"
-            ></el-option>
-          </el-select>
+          <el-input v-model="form.fra" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="片长" :label-width="formLabelWidth">
+          <el-input v-model="form.hours" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="剧情介绍" :label-width="formLabelTextareaWidth">
+          <el-input type="textarea" v-model="form.info" :rows="4"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -150,20 +142,27 @@ export default {
       areas: [],
       form: {
         id: 0,
-        username: "",
-        password: "",
-        provinceid: "",
-        cityid: "",
-        areaid: "",
-        sex: ""
+        name: "",
+        dir: "",
+        star: "",
+        catid: 1,
       },
       formLabelWidth: "50px",
+      formLabelTextareaWidth: "80px",
       type: "",
-      ids: ""
+      ids: "",
+      cat: [{
+        id: 1,
+        name: '剧情'
+      },{
+        id: 2,
+        name: '喜剧'
+      }]
     };
   },
   created() {
     this.getFilmList();
+    this.$emit('getLoginMessage', true);
   },
   methods: {
     tableRowClassName({ row, rowIndex }) {
@@ -177,13 +176,13 @@ export default {
     handleEdit(index, row) {
       console.log(index, row);
       this.form.id = this.tableData[index].id;
-      this.form.username = this.tableData[index].username;
-      this.form.password = this.tableData[index].password;
-      this.form.sex = this.tableData[index].sex;
-      this.form.provinceid = this.tableData[index].provinceid;
-      this.form.cityid = this.tableData[index].cityid;
-      this.form.areaid = this.tableData[index].areaid;
-      this.getProvinces();
+      this.form.name = this.tableData[index].name;
+      this.form.dir = this.tableData[index].dir;
+      this.form.star = this.tableData[index].star;
+      this.form.cat = this.tableData[index].cat;
+      this.form.fra = this.tableData[index].fra;
+      this.form.hours = this.tableData[index].hours;
+      this.form.info = this.tableData[index].info;
       this.type = "edit";
       this.dialogVisible = true;
     },
@@ -437,9 +436,16 @@ export default {
   width: 298px;
   margin-left: 10px;
 }
-.el-dialog .el-form .el-select {
-  width: 90px;
+.el-dialog .el-textarea {
+  width: 268px;
   margin-left: 10px;
+}
+.el-dialog .el-form .el-select {
+  width: 298px;
+  margin-left: 10px;
+}
+.el-dialog .el-form .el-select /deep/ input {
+  text-align: center;
 }
 .customWidth {
   width: 1000px;
@@ -455,5 +461,11 @@ export default {
   margin-right: 0;
   margin-bottom: 0;
   width: 80%;
+}
+.el-select-dropdown .el-select-dropdown__list .el-select-dropdown__item {
+  text-align: center;
+}
+.el-dialog .el-textarea /deep/ .el-textarea__inner{ 
+  resize: none;
 }
 </style>
