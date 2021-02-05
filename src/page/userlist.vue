@@ -236,7 +236,7 @@ export default {
           console.log(error);
         });
     },
-    getProvinces(value) {
+    getProvinces() {
       let that = this;
       axios({
         method: "post",
@@ -244,6 +244,7 @@ export default {
       })
         .then(function(response) {
           that.provinces = response.data;
+          console.log(that.provinces)
           that.getCities(that.form.provinceid);
         })
         .catch(function(error) {

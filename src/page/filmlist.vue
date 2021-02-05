@@ -4,9 +4,9 @@
       <div class="el-content">
         <div class="search">
           <div class="sitem">
-            <span class="demonstration">创建时间</span>
+            <span class="demonstration">上映日期</span>
             <el-date-picker
-              v-model="createTime"
+              v-model="showTime"
               type="date"
               placeholder="选择日期"
               value-format="yyyy-MM-dd"
@@ -32,9 +32,8 @@
           <el-table-column prop="dir" label="导演" min-width="8%"></el-table-column>
           <el-table-column prop="star" label="主演" min-width="18%"></el-table-column>
           <el-table-column prop="cat" label="类型" min-width="10%"></el-table-column>
-          <el-table-column label="地区" min-width="10%">
-            <template slot-scope="scope">{{scope.row.province + scope.row.city + scope.row.area}}</template>
-          </el-table-column>
+          <el-table-column prop="fra" label="地区" min-width="10%"></el-table-column>
+          <el-table-column prop="showTime" label="上映时间" min-width="10%"></el-table-column>
           <el-table-column prop="hours" label="片长" min-width="8%"></el-table-column>
           <el-table-column prop="opt" label="操作" min-width="15%">
             <template slot-scope="scope">
@@ -48,6 +47,9 @@
                 <el-form-item label="名称">
                   <span>{{ props.row.name }}</span>
                 </el-form-item>
+                <el-form-item label="评分">
+                  <span>{{ props.row.rate }}</span>
+                </el-form-item>
                 <el-form-item label="导演">
                   <span>{{ props.row.dir }}</span>
                 </el-form-item>
@@ -59,6 +61,9 @@
                 </el-form-item>
                 <el-form-item label="地区">
                   <span>{{ props.row.fra }}</span>
+                </el-form-item>
+                <el-form-item label="上映时间">
+                  <span>{{ props.row.showTime }}</span>
                 </el-form-item>
                 <el-form-item label="片长">
                   <span>{{ props.row.hours }}</span>
@@ -88,6 +93,9 @@
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="评分" :label-width="formLabelWidth">
+          <el-input v-model="form.rate" autocomplete="off"></el-input>
+        </el-form-item>
         <el-form-item label="导演" :label-width="formLabelWidth">
           <el-input v-model="form.dir" autocomplete="off"></el-input>
         </el-form-item>
@@ -106,6 +114,16 @@
         </el-form-item>
         <el-form-item label="地区" :label-width="formLabelWidth">
           <el-input v-model="form.fra" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="上映时间" :label-width="formLabelTextareaWidth">
+          <el-date-picker
+              v-model="form.showTime"
+              type="date"
+              placeholder="选择日期"
+              value-format="yyyy-MM-dd"
+              @change="changeTime"
+              style="width:271px;"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="片长" :label-width="formLabelWidth">
           <el-input v-model="form.hours" autocomplete="off"></el-input>
@@ -133,7 +151,7 @@ export default {
   data() {
     return {
       isLogin: true,
-      createTime: "",
+      showTime: "",
       count: 0,
       dialogVisible: false,
       tableData: [],
@@ -143,21 +161,20 @@ export default {
       form: {
         id: 0,
         name: "",
+        rate: "",
         dir: "",
         star: "",
-        catid: 1,
+        catid: "",
+        fra: "",
+        showTime: "2021-03-01",
+        hours: "",
+        info: ""
       },
       formLabelWidth: "50px",
-      formLabelTextareaWidth: "80px",
+      formLabelTextareaWidth: "77px",
       type: "",
       ids: "",
-      cat: [{
-        id: 1,
-        name: '剧情'
-      },{
-        id: 2,
-        name: '喜剧'
-      }]
+      cat: []
     };
   },
   created() {
@@ -177,14 +194,31 @@ export default {
       console.log(index, row);
       this.form.id = this.tableData[index].id;
       this.form.name = this.tableData[index].name;
+      this.form.rate = this.tableData[index].rate;
       this.form.dir = this.tableData[index].dir;
       this.form.star = this.tableData[index].star;
-      this.form.cat = this.tableData[index].cat;
+      this.form.catid = this.tableData[index].catid;
       this.form.fra = this.tableData[index].fra;
+      this.form.showTime = this.tableData[index].showTime;
       this.form.hours = this.tableData[index].hours;
       this.form.info = this.tableData[index].info;
+      this.getType();
       this.type = "edit";
       this.dialogVisible = true;
+    },
+    getType() {
+      let that = this;
+      axios({
+        method: "post",
+        url: "/test/index.php/admin/FilmInfo/getType"
+      })
+        .then(function(response) {
+          that.cat = response.data;
+          console.log(that.cat)
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -192,7 +226,7 @@ export default {
 
       axios({
         method: "post",
-        url: "/test/index.php/admin/UserInfo/del",
+        url: "/test/index.php/admin/FilmInfo/del",
         data: qs.stringify({ ids: this.tableData[index].id })
       })
         .then(function(response) {
@@ -234,7 +268,7 @@ export default {
       let data = {
         page: page || 1,
         num: 10,
-        createTime: this.createTime
+        showTime: this.showTime
       };
       axios({
         method: "post",
@@ -253,7 +287,7 @@ export default {
       let that = this;
       axios({
         method: "post",
-        url: "/test/index.php/admin/UserInfo/del",
+        url: "/test/index.php/admin/FilmInfo/del",
         data: qs.stringify({ ids: this.ids })
       })
         .then(function(response) {
@@ -321,7 +355,7 @@ export default {
       let that = this;
       axios({
         method: "post",
-        url: "/test/index.php/admin/UserInfo/edit",
+        url: "/test/index.php/admin/FilmInfo/edit",
         data: qs.stringify(this.form)
       })
         .then(function(response) {
@@ -339,13 +373,16 @@ export default {
         });
     },
     handleAdd() {
-      this.getProvinces();
-      this.form.username = "";
-      this.form.password = "";
-      this.form.sex = "";
-      this.form.provinceid = "";
-      this.form.cityid = "";
-      this.form.areaid = "";
+      this.getType();
+      this.form.name = "";
+      this.form.rate = "";
+      this.form.dir = "";
+      this.form.star = "";
+      this.form.catid = "";
+      this.form.fra = "";
+      this.form.showTime = "";
+      this.form.hours = "";
+      this.form.info = "";
       this.type = "add";
       this.dialogVisible = true;
     },
@@ -353,7 +390,7 @@ export default {
       let that = this;
       axios({
         method: "post",
-        url: "/test/index.php/admin/UserInfo/add",
+        url: "/test/index.php/admin/FilmInfo/add",
         data: qs.stringify(this.form)
       })
         .then(function(response) {
@@ -371,7 +408,7 @@ export default {
         });
     },
     changeTime(val) {
-      this.createTime = val;
+      this.showTime = val;
     },
     search() {
       this.getFilmList();
@@ -437,7 +474,7 @@ export default {
   margin-left: 10px;
 }
 .el-dialog .el-textarea {
-  width: 268px;
+  width: 271px;
   margin-left: 10px;
 }
 .el-dialog .el-form .el-select {
@@ -467,5 +504,8 @@ export default {
 }
 .el-dialog .el-textarea /deep/ .el-textarea__inner{ 
   resize: none;
+}
+.a{
+  width: 100px;
 }
 </style>
