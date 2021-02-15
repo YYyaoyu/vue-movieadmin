@@ -19,7 +19,7 @@
         <el-menu-item-group>
           <el-menu-item index="/userlist">用户列表</el-menu-item>
           <el-menu-item index="/filmlist">影片列表</el-menu-item>
-          <el-menu-item index="1-3">商家列表</el-menu-item>
+          <el-menu-item index="1-3">影院列表</el-menu-item>
           <el-menu-item index="1-4">订单列表</el-menu-item>
         </el-menu-item-group>
       </el-submenu>

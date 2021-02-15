@@ -502,7 +502,7 @@ export default {
 .el-select-dropdown .el-select-dropdown__list .el-select-dropdown__item {
   text-align: center;
 }
-.el-dialog .el-textarea /deep/ .el-textarea__inner{ 
+.el-dialog .el-textarea /deep/ .el-textarea__inner{
   resize: none;
 }
 .a{
