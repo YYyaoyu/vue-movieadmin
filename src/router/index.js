@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '../page/login'
 import UserList from '../page/userlist'
 import FilmList from '../page/filmlist'
+import CinemaList from '../page/cinemalist'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/filmlist',
       name: 'FilmList',
       component: FilmList
+    },
+    {
+      path: '/cinemalist',
+      name: 'CinemaList',
+      component: CinemaList
     }
 
   ]
